@@ -1,15 +1,47 @@
 #include <gtk/gtk.h>
 #include <string>
 
+#include "videoHandler.h"
+
 //void callback(GtkWidget* widget, gpointer data);
 
 //gtk_signal_connect is used to define what buttons do
+
+GtkWidget* window;
+
+int getHeight()
+{
+	int width, height;
+
+	gtk_window_get_size(GTK_WINDOW(window), &width, &height);
+
+	return(height);
+}
+
+int getWidth()
+{
+	int width, height;
+
+	gtk_window_get_size(GTK_WINDOW(window), &width, &height);
+
+	return(width);
+}
 
 void save() // Not written yet
 {
 	g_print("Saved");
 }
 
+/*void drawArea(GtkWidget *window)
+{
+	cairo_surface_t* surface;
+	cairo_surface_t* cr;
+	int height = getHeight();
+	int width = getWidth();
+
+	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (width-0.2*width), (height-0.2*height));
+}
+*/
 
 void close(GtkWidget* widget, gpointer data, GtkWidget* window) // Brings up menu for exiting
 {
@@ -35,7 +67,6 @@ void close(GtkWidget* widget, gpointer data, GtkWidget* window) // Brings up men
 
 void createWindow(int argc, char* argv[], std::string title) //Creates the window
 {
-	GtkWidget* window;
 	GtkWidget* button;
 
 	gtk_init(&argc, &argv);
@@ -43,6 +74,7 @@ void createWindow(int argc, char* argv[], std::string title) //Creates the windo
 	//window
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), title.c_str());
+	gtk_window_set_default_size(GTK_WINDOW(window),500,500);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(close), NULL);
 
 	//button
@@ -51,6 +83,7 @@ void createWindow(int argc, char* argv[], std::string title) //Creates the windo
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close), NULL);
 
 	gtk_widget_show_all(window); // set the window as visible
+	loadVideo();
 
 	gtk_main(); //Main loop for GTK
 }
