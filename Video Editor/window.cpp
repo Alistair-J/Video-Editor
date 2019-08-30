@@ -29,7 +29,7 @@ int getWidth()
 
 void save() // Not written yet
 {
-	saveVideo();
+	// saveVideo();
 	g_print("Saved");
 }
 

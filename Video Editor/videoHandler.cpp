@@ -1,6 +1,5 @@
 #include <opencv2/opencv.hpp>
 #include <string>
-#include <chrono> //<---
 
 #include <iostream>
 
@@ -12,7 +11,8 @@ cv::Mat frame;
 void saveVideo()
 {
 	const std::string filename = "outvid1.avi";
-	cv::VideoWriter writer(filename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 10,
+	int fps = capture.get(cv::CAP_PROP_FPS);
+	cv::VideoWriter writer(filename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps,
 		cv::Size(capture.get(cv::CAP_PROP_FRAME_WIDTH),
 			capture.get(cv::CAP_PROP_FRAME_HEIGHT)), TRUE);
 
@@ -23,7 +23,7 @@ void saveVideo()
 	}
 	//--- GRAB AND WRITE LOOP
 	std::cout << "Writing videofile\nPress any key to terminate\n";
-	while(TRUE)
+	while (TRUE)
 	{
 		// check if we succeeded
 		if (!capture.read(frame)) {
@@ -33,10 +33,54 @@ void saveVideo()
 		// encode the frame into the videofile stream
 		writer.write(frame);
 		// show live and wait for a key with timeout long enough to show images		cv::imshow("Live", frame);
-		if (cv::waitKey(5) >= 0)
+		char c = (char)cv::waitKey(25);
+		if (c == 27)
+		{
 			break;
+		}
 	}
 
+}
+
+void clip(int startTime, int endTime)
+{
+	const std::string filename = "clip1.avi";
+	//int frames = capture.get(cv::CAP_PROP_FRAME_COUNT);
+	int fps = capture.get(cv::CAP_PROP_FPS);
+
+	startTime *= fps;
+	endTime *= fps;
+
+	cv::VideoWriter writer(filename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps,
+		cv::Size(capture.get(cv::CAP_PROP_FRAME_WIDTH),
+			capture.get(cv::CAP_PROP_FRAME_HEIGHT)), TRUE);
+
+	if (!writer.isOpened()) {
+		std::cout << "Could not open the output video file for write\n";
+	}
+
+	int frames = 0;
+	while (TRUE)
+	{
+		frames++;
+		capture.read(frame);
+		if (!capture.read(frame))
+		{
+			error("ERROR!blank frame grabbed\n");
+			break;
+		}
+
+		if (frames >= startTime && frames <= endTime)
+		{
+			writer.write(frame);
+		}
+
+		char c = (char)cv::waitKey(25);
+		if (c == 27)
+		{
+			break;
+		}
+	}
 }
 
 void loadVideo()
@@ -68,10 +112,8 @@ void loadVideo()
 			break;
 		}
 	}
-	saveVideo();
+	//saveVideo();
+	clip(1,5);
 	capture.release();
 	cv::destroyAllWindows();
 }
-
-
-//playback
