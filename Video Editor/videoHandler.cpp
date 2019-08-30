@@ -2,23 +2,49 @@
 #include <string>
 #include <chrono> //<---
 
+#include <iostream>
+
 #include "window.h"
+
+cv::VideoCapture capture("sample.mp4");
+cv::Mat frame;
 
 void saveVideo()
 {
-	cv::VideoWriter write("outvid.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 60, cv::Size(cv::CAP_PROP_FRAME_WIDTH, cv::CAP_PROP_FRAME_HEIGHT));
+	const std::string filename = "outvid1.avi";
+	cv::VideoWriter writer(filename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 10,
+		cv::Size(capture.get(cv::CAP_PROP_FRAME_WIDTH),
+			capture.get(cv::CAP_PROP_FRAME_HEIGHT)), TRUE);
+
+	cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
+
+	if (!writer.isOpened()) {
+		std::cout << "Could not open the output video file for write\n";
+	}
+	//--- GRAB AND WRITE LOOP
+	std::cout << "Writing videofile\nPress any key to terminate\n";
+	while(TRUE)
+	{
+		// check if we succeeded
+		if (!capture.read(frame)) {
+			error("ERROR!blank frame grabbed\n");
+			break;
+		}
+		// encode the frame into the videofile stream
+		writer.write(frame);
+		// show live and wait for a key with timeout long enough to show images		cv::imshow("Live", frame);
+		if (cv::waitKey(5) >= 0)
+			break;
+	}
+
 }
 
 void loadVideo()
 {
-	cv::VideoCapture capture("sample.mp4");
-
 	int height = getHeight();
 	int width = getWidth();
 	height = height - (0.2 * height);
 	width = width - (0.2 * width);
-
-
 
 	if (!capture.isOpened())
 	{
@@ -26,7 +52,7 @@ void loadVideo()
 	}
 	while (TRUE)
 	{
-		cv::Mat frame;
+
 		capture >> frame;
 		if (frame.empty())
 		{

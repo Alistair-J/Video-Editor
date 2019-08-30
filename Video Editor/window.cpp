@@ -29,10 +29,11 @@ int getWidth()
 
 void save() // Not written yet
 {
+	saveVideo();
 	g_print("Saved");
 }
 
-/*void drawArea(GtkWidget *window)
+void drawArea(GtkWidget *window)
 {
 	cairo_surface_t* surface;
 	cairo_surface_t* cr;
@@ -41,7 +42,6 @@ void save() // Not written yet
 
 	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (width-0.2*width), (height-0.2*height));
 }
-*/
 
 void close(GtkWidget* widget, gpointer data, GtkWidget* window) // Brings up menu for exiting
 {
@@ -90,5 +90,6 @@ void createWindow(int argc, char* argv[], std::string title) //Creates the windo
 
 void error(std::string error)
 {
+	gtk_widget_show_all(window);
 	g_print("Error: ", error);
 }
