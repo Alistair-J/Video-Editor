@@ -8,6 +8,16 @@
 cv::VideoCapture capture("sample.mp4");
 cv::Mat frame;
 
+cv::VideoCapture getCapture()
+{
+	return(capture);
+}
+
+cv::Mat getFrame()
+{
+	return(frame);
+}
+
 void saveVideo()
 {
 	const std::string filename = "outvid1.avi";
@@ -32,7 +42,7 @@ void saveVideo()
 		}
 		// encode the frame into the videofile stream
 		writer.write(frame);
-		// show live and wait for a key with timeout long enough to show images		cv::imshow("Live", frame);
+		// show live and wait for a key with timeout long enough to show images
 		char c = (char)cv::waitKey(25);
 		if (c == 27)
 		{
@@ -42,9 +52,9 @@ void saveVideo()
 
 }
 
-void clip(int startTime, int endTime)
+void clip(int startTime, int endTime, std::string name)
 {
-	const std::string filename = "clip1.avi";
+	const std::string filename = name.c_str();
 	//int frames = capture.get(cv::CAP_PROP_FRAME_COUNT);
 	int fps = capture.get(cv::CAP_PROP_FPS);
 
@@ -113,7 +123,7 @@ void loadVideo()
 		}
 	}
 	//saveVideo();
-	clip(1,5);
+	clip(1, 5, "clip1.avi");
 	capture.release();
 	cv::destroyAllWindows();
 }

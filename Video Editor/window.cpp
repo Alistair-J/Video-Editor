@@ -2,6 +2,7 @@
 #include <string>
 
 #include "videoHandler.h"
+#include "drawingArea.h"
 
 //void callback(GtkWidget* widget, gpointer data);
 
@@ -27,20 +28,13 @@ int getWidth()
 	return(width);
 }
 
-void save() // Not written yet
+void save()
 {
-	// saveVideo();
+	auto capture = getCapture();
+	int frames = capture.get(cv::CAP_PROP_FRAME_COUNT);
+	frames *= capture.get(cv::CAP_PROP_FPS);
+	clip(0, frames, "outvid1.avi");
 	g_print("Saved");
-}
-
-void drawArea(GtkWidget *window)
-{
-	cairo_surface_t* surface;
-	cairo_surface_t* cr;
-	int height = getHeight();
-	int width = getWidth();
-
-	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (width-0.2*width), (height-0.2*height));
 }
 
 void close(GtkWidget* widget, gpointer data, GtkWidget* window) // Brings up menu for exiting
@@ -68,6 +62,7 @@ void close(GtkWidget* widget, gpointer data, GtkWidget* window) // Brings up men
 void createWindow(int argc, char* argv[], std::string title) //Creates the window
 {
 	GtkWidget* button;
+	drawArea area;
 
 	gtk_init(&argc, &argv);
 
@@ -82,6 +77,10 @@ void createWindow(int argc, char* argv[], std::string title) //Creates the windo
 	gtk_container_add(GTK_CONTAINER(window), button);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close), NULL);
 
+	GtkWidget* da = gtk_drawing_area_new();
+	gtk_container_add(GTK_CONTAINER(window), da);
+	g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(display), NULL);
+
 	gtk_widget_show_all(window); // set the window as visible
 	loadVideo();
 
@@ -92,4 +91,9 @@ void error(std::string error)
 {
 	gtk_widget_show_all(window);
 	g_print("Error: ", error);
+}
+
+GtkWidget* getWindowNotNative()
+{
+	return(window);
 }

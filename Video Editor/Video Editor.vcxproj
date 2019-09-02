@@ -129,11 +129,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="drawingArea.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="videoHandler.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="drawingArea.h" />
     <ClInclude Include="videoHandler.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
