@@ -1,12 +1,11 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 
-#include <iostream>
-
 #include "window.h"
 
 cv::VideoCapture capture("sample.mp4");
 cv::Mat frame;
+bool videoState = TRUE;
 
 cv::VideoCapture getCapture()
 {
@@ -126,4 +125,47 @@ void loadVideo()
 	clip(1, 5, "clip1.avi");
 	capture.release();
 	cv::destroyAllWindows();
+}
+
+void loadFrame1()
+{
+	int height = 500;
+	int width = 500;
+	height = height - (0.2 * height);
+	width = width - (0.2 * width);
+	if (!capture.isOpened())
+	{
+		error("Video failed to open");
+	}
+	capture.read(frame);
+	//cv::resize(frame,frame,cv::Size(width,height),0,0,cv::INTER_LINEAR);
+}
+
+void load1Frame(GtkWidget* widget)
+{
+	int width = gtk_widget_get_allocated_width(widget);
+	int height = gtk_widget_get_allocated_height(widget);
+
+	if (!capture.isOpened())
+	{
+		error("Video failed to open");
+	}
+	capture.read(frame);
+}
+
+void changeVideoState()
+{
+	if (videoState == TRUE)
+	{
+		videoState = FALSE;
+	}
+	else
+	{
+		videoState = TRUE;
+	}
+}
+
+bool getVideoState()
+{
+	return(videoState);
 }

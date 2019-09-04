@@ -5,7 +5,7 @@
 
 int main(int   argc, char* argv[])
 {
-
+	loadFrame1();
 	createWindow(argc, argv, "Title");
 	return 0;
 }
